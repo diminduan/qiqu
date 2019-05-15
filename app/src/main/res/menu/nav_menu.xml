@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_attention"
+            android:icon="@drawable/attention"
+            android:title="我的关注" />
+
+        <item
+            android:id="@+id/item_collect"
+            android:icon="@drawable/collect"
+            android:title="我的收藏"/>
+
+        <item
+            android:id="@+id/item_share"
+            android:icon="@drawable/share"
+            android:title="我的动态"/>
+    </group>
+
+    <item android:title="数据">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/item_data"
+                    android:icon="@drawable/data"
+                    android:title="我的数据"/>
+
+                <item
+                    android:id="@+id/item_photo"
+                    android:icon="@drawable/photo"
+                    android:title="我的照片"/>
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="相关">
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/item_setting"
+                    android:icon="@drawable/setting"
+                    android:title="设置"/>
+
+                <item
+                    android:id="@+id/item_about"
+                    android:icon="@drawable/about"
+                    android:title="关于"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>

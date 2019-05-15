@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="120dp">
+
+    <ImageView
+        android:id="@+id/route_icon"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+        <TextView
+            android:id="@+id/route_name"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textSize="18sp"
+            android:textColor="@color/smssdk_black"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/route_detail"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textSize="13sp"
+            android:textColor="#a5a5a5"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
+
+</LinearLayout>

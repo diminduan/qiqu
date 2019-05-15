@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowContentTransitions">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DialogWindowStyle" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/button_choose_backgroud</item>
+    </style>
+
+    <style name="main_menu_animal_style">
+        <item name="android:windowEnterAnimation">@anim/button_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/button_dialog_out</item>
+    </style>
+
+</resources>

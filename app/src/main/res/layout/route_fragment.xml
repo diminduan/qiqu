@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/lin01"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="310dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/getcity"
+                android:layout_width="22dp"
+                android:layout_height="25dp"
+                android:src="@drawable/location"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"/>
+            <TextView
+                android:id="@+id/city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="定位"
+                android:textSize="17sp"
+                android:textColor="@color/smssdk_black"/>
+
+            <SearchView
+                android:id="@+id/route_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:iconifiedByDefault="false"
+                android:inputType="text"
+                android:queryHint="查询路线"
+                android:background="@drawable/edit_query_bg"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp">
+
+            </SearchView>
+        </LinearLayout>
+
+        <org.angmarch.views.NiceSpinner
+            android:id="@+id/style_spinner"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="4dp"
+            custom:textTint="@color/smssdk_black"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/route_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin01">
+
+        <ScrollView
+            android:id="@+id/route_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/lin01">
+
+            <RelativeLayout
+                android:id="@+id/rel02"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                //SlideLayout布局
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/route_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    custom:pager_animation="Accordion"
+                    custom:auto_cycle="true"
+                    custom:indicator_visibility="visible"/>
+                <com.daimajia.slider.library.Indicators.PagerIndicator
+                    android:id="@+id/route_indicator"
+                    style="@style/AndroidImageSlider_Corner_Oval_Orange"
+                    android:layout_alignBottom="@id/route_slider"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="12dp"/>
+
+                <com.example.duand.qiqu.Utils.ListViewForScrollView
+                    android:id="@+id/route_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/list_border"
+                    android:layout_below="@id/route_slider">
+                </com.example.duand.qiqu.Utils.ListViewForScrollView>
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    <AbsoluteLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="30dp">
+
+        <ImageView
+            android:id="@+id/add_route"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/add_big"/>
+    </AbsoluteLayout>
+
+</RelativeLayout>

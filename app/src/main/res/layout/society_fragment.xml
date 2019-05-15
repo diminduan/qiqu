@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/society_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/society_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:src="@mipmap/society_back"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:id="@+id/add_message"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/camera"
+                    android:padding="5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="10dp"/>
+
+                <ImageView
+                    android:id="@+id/society_head"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/header"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/head_iv_bg"
+                    android:padding="2dp"
+                    android:layout_marginTop="190dp"
+                    android:layout_marginRight="20dp" />
+
+                <com.example.duand.qiqu.Utils.ListViewForScrollView
+                    android:id="@+id/society_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/society_head">
+
+                </com.example.duand.qiqu.Utils.ListViewForScrollView>
+
+            </RelativeLayout>
+
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

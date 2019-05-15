@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#1f1f1f</color>
+    <color name="colorAccent">#4c4c4c</color>
+    <color name="unselected">#c5c5c5</color>
+    <color name="white">#ffffff</color>
+    <color name="selected">#949494</color>
+    <color name="search_txt_color">#181818</color>
+    <color name="search_txt_hint_color">#989898</color>
+    <color name="start">#7a7979</color>
+    <color name="middle">#aa4343</color>
+    <color name="end">#353535</color>
+</resources>

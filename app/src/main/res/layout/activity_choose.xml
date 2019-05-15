@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:src="@drawable/main_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"/>
+    
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="注 册"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textSize="16sp"
+        android:layout_above="@id/btn_login"
+        android:textColor="@color/white"
+        android:background="@drawable/regbtn_back"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登 录"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textSize="16sp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/logbtn_back"/>
+
+
+</RelativeLayout>

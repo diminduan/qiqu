@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@drawable/list_border">
+
+    <ImageView
+        android:id="@+id/small_head_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="2dp"
+        android:background="@drawable/head_iv_bg" />
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_toRightOf="@id/small_head_iv"
+        android:layout_marginLeft="5dp"
+        android:textColor="#71a5f7"
+        android:padding="2dp"/>
+    <TextView
+        android:id="@+id/presentation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/smssdk_black"
+        android:textSize="15sp"
+        android:layout_toRightOf="@id/small_head_iv"
+        android:layout_below="@id/name"
+        android:layout_marginLeft="5dp"
+        android:lines="3"
+        android:minLines="1"
+        android:padding="2dp"
+        android:layout_marginTop="2dp"/>
+
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="240dp"
+        android:layout_height="160dp"
+        android:layout_below="@id/presentation"
+        android:layout_toRightOf="@id/small_head_iv"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/picture"
+        android:layout_toRightOf="@id/small_head_iv"
+        android:orientation="horizontal"
+        android:layout_marginTop="7dp">
+        <TextView
+            android:id="@+id/nowtime"
+            android:layout_width="wrap_content"
+            android:layout_height="25sp"
+            android:textSize="14sp"
+            android:padding="2dp"/>
+        <ImageView
+            android:id="@+id/put_good"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:src="@drawable/good"/>
+        <ImageView
+            android:id="@+id/put_comment"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:src="@drawable/comment"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
