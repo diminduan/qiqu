@@ -97,7 +97,7 @@ public class FragmentActivity extends AppCompatActivity implements BottomNavigat
                 break;
             case 2:
                 if(timeFragment == null){
-                    timeFragment = TimeFragment.newInstance("时间");
+                    timeFragment = new TimeFragment();
                 }
                 transaction.replace(R.id.frame_lay,timeFragment);
                 break;

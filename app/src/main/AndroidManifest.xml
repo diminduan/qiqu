@@ -82,10 +82,10 @@
 
         //定位sdk key声明
         <meta-data android:name="com.amap.api.v2.apikey"
-            android:value="c347b635b703cd1ff17c7566618217f1"/>
-
+            android:value="964753b0c84e5c0694259c4472d5a411"/>
 
         <service android:name="com.amap.api.location.APSService" />
+        <!--<service android:name="com.amap.api.track.AMapTrackService" />-->
     </application>
 
 </manifest>
