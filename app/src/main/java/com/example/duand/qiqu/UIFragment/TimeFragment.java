@@ -17,6 +17,9 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.track.AMapTrackClient;
+import com.amap.api.track.OnTrackLifecycleListener;
+import com.amap.api.track.TrackParam;
 import com.example.duand.qiqu.R;
 
 public class TimeFragment extends Fragment {
@@ -32,13 +35,13 @@ public class TimeFragment extends Fragment {
     public static double longitude; //纬度
     static LatLng latLng;//通过小蓝点获取到的坐标
 
-//    long serviceId=16164;
-//    String terminalName="zy";
-//    long terminalId=100281481;
-//    long trackId=0;
-//    AMapTrackClient aMapTrackClient;
-//    OnTrackLifecycleListener onTrackLifecycleListener;
-//    TrackParam trackParam=new TrackParam(serviceId,terminalId);
+    long serviceId=16164;
+    String terminalName="zy";
+    long terminalId=100281481;
+    long trackId=0;
+    AMapTrackClient aMapTrackClient;
+    OnTrackLifecycleListener onTrackLifecycleListener;
+    TrackParam trackParam=new TrackParam(serviceId,terminalId);
 //
 //    QueryTrackRequest queryTrackRequest; //查询终端轨迹点信息
 
@@ -65,10 +68,8 @@ public class TimeFragment extends Fragment {
         mMapView = (MapView)view.findViewById(R.id.map);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
-
         initMap(); //初始化地图
         initMyLocation(); // 初始化定位
-
         return view;
     }
 
@@ -107,10 +108,6 @@ public class TimeFragment extends Fragment {
                 aMapLocation.getLatitude();//获取纬度
                 aMapLocation.getLongitude();//获取经度
                 aMapLocation.getLocationType(); //获取定位来源
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("纬度" + aMapLocation.getLatitude() + "经度" + aMapLocation.getLongitude() + "定位来源" + aMapLocation.getLocationType()
-                );
-                Toast.makeText(getActivity(), buffer.toString(), Toast.LENGTH_LONG).show();
                 latitud=aMapLocation.getLatitude();
                 longitude=aMapLocation.getLongitude();
             }
