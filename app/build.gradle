@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.mob.sdk'
 android {
+    useLibrary 'org.apache.http.legacy'
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.duand.qiqu"
@@ -68,4 +69,5 @@ dependencies {
     implementation files('libs/httpclient-4.5.6.jar')
     implementation files('libs/httpmime-4.5.6.jar')
     implementation files('libs/httpcore-4.4.6.jar')
+    implementation files('libs/commons-logging-1.1.1.jar')
 }

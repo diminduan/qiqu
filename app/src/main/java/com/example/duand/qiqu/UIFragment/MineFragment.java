@@ -600,8 +600,8 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void run() {
                         String url = Constants.newUrl +"uploadPic?"+"userId="+user_id;
-//                        UploadFileUtils.uploadFile(photoUri.getPath(),url);
-                        UploadUtil.uploadFile(photoUri,url);
+                        UploadFileUtils.uploadFile(photoUri.getPath(),url);
+//                        UploadUtil.uploadFile(photoUri,url);
                     }
                 }).start();
 
