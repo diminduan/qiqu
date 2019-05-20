@@ -1,15 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin:'com.mob.sdk'
-
+apply plugin: 'com.mob.sdk'
 android {
-    signingConfigs {
-        androidstudio_app {
-            keyAlias 'key0'
-            keyPassword '123456'
-            storeFile file('E:/keystore/test.jks')
-            storePassword '123456'
-        }
-    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.duand.qiqu"
@@ -18,50 +9,63 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
         aaptOptions.cruncherEnabled = false
         aaptOptions.useNewCruncher = false
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.androidstudio_app
         }
-        debug {
-            signingConfig signingConfigs.androidstudio_app
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dependencies {
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+        implementation 'com.android.support:appcompat-v7:28.0.0'
+        implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+        testImplementation 'junit:junit:4.12'
+        androidTestImplementation 'com.android.support.test:runner:1.0.1'
+        androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+        implementation 'com.ashokvarma.android:bottom-navigation-bar:2.1.0'
+        //AndroidImageSlide的相关依赖
+        implementation 'com.daimajia.slider:library:1.1.5@aar'
+        implementation 'com.squareup.picasso:picasso:2.5.2'
+        implementation 'com.nineoldandroids:library:2.4.0'
+        implementation 'com.android.support:support-v4:+'
+        //    //城市定位CityPicker依赖
+        implementation('com.zaaach:citypicker:1.1')
+        //必选
+        implementation 'com.android.support:recyclerview-v7:+'
+        //必选
+        //nice-spinner依赖
+        implementation 'com.github.arcadefire:nice-spinner:1.4'
+        // NavigationView控件依赖
+        implementation 'com.android.support:design:28.0.0'
+
+        implementation 'com.android.support:multidex:1.0.1'
+    }
+
+    MobSDK {
+        appKey "28f5e3c274fed"
+        appSecret "afe4b72631c95a72bebcd11a6d8b4297"
+        SMSSDK {}
     }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation 'com.ashokvarma.android:bottom-navigation-bar:2.1.0'
-    //AndroidImageSlide的相关依赖
-    implementation 'com.daimajia.slider:library:1.1.5@aar'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'com.android.support:support-v4:+'
-    //    //城市定位CityPicker依赖
-    implementation ('com.zaaach:citypicker:1.1')
-
-    //必选
-    implementation 'com.android.support:recyclerview-v7:+'
-    //必选
-    //nice-spinner依赖
-    implementation 'com.github.arcadefire:nice-spinner:1.4'
-
-    // NavigationView控件依赖
-    implementation 'com.android.support:design:28.0.0'
-}
-
-MobSDK {
-    appKey "28f5e3c274fed"
-    appSecret "afe4b72631c95a72bebcd11a6d8b4297"
-    SMSSDK {}
+    implementation files('libs/fastjson-1.2.58.jar')
+    implementation files('libs/AMap3DMap_6.8.0_AMapNavi_6.7.0_AMapSearch_6.5.0_AMapTrack_1.0.0_AMapLocation_4.6.0_20190423.jar')
+    implementation files('libs/httpclient-4.5.6.jar')
+    implementation files('libs/httpmime-4.5.6.jar')
+    implementation files('libs/httpcore-4.4.6.jar')
 }

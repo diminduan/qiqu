@@ -7,6 +7,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/diary_refresh">
     <ScrollView
         android:id="@+id/scr_view"
         android:layout_width="match_parent"
@@ -40,7 +44,6 @@
                 android:id="@+id/tv_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="小老弟"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:layout_centerHorizontal="true"
@@ -118,8 +121,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:layout_marginLeft="15dp"
-                        android:text="15779662904"/>
+                        android:layout_marginLeft="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -133,24 +135,16 @@
                         android:textSize="16sp"/>
                     <ImageView
                         android:id="@+id/gender"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_marginLeft="15dp"
-                        android:src="@drawable/male"/>
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="30dp" />
+
                     <TextView
-                        android:id="@+id/province"
+                        android:id="@+id/address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:text="江西"
-                        android:layout_marginLeft="15dp"/>
-                    <TextView
-                        android:id="@+id/city"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:text="南昌"
-                        android:layout_marginLeft="15dp"/>
+                        android:layout_marginLeft="30dp"/>
 
                 </LinearLayout>
 
@@ -164,11 +158,11 @@
                         android:text="个性签名"
                         android:textSize="16sp"/>
                     <TextView
+                        android:id="@+id/moto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:layout_marginLeft="15dp"
-                        android:text="哪怕是一句简单的问候!"/>
+                        android:layout_marginLeft="15dp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -198,10 +192,7 @@
                     android:layout_height="2dp"
                     android:background="#de6c6c"/>
 
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/diary_refresh">
+
 
                     <com.example.duand.qiqu.Utils.ListViewForScrollView
                         android:id="@+id/list_diary"
@@ -210,7 +201,7 @@
                         android:layout_marginTop="2dp">
 
                     </com.example.duand.qiqu.Utils.ListViewForScrollView>
-                </android.support.v4.widget.SwipeRefreshLayout>
+
 
                 <!--<ListView-->
                     <!--android:id="@+id/list_diary"-->
@@ -223,7 +214,8 @@
 
         </RelativeLayout>
     </ScrollView>
-    
+    </android.support.v4.widget.SwipeRefreshLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
@@ -231,7 +223,7 @@
         android:layout_gravity="start"
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/layout_nav_header"
-        app:itemTextColor="#c9d7e4"
+        app:itemTextColor="#d8e5f1"
         android:background="#8da7bc">
 
     </android.support.design.widget.NavigationView>

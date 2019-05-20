@@ -99,17 +99,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="路线描述:"
+            android:text="路线距离:"
             android:textSize="15sp"
             android:padding="6dp"/>
         <EditText
-            android:id="@+id/route_detail"
+            android:id="@+id/route_distance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_back"
             android:padding="6dp"
             android:inputType="textMultiLine"
-            android:lines="2"
             android:minLines="1"/>
     </LinearLayout>
 
@@ -121,7 +120,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="推荐理由:"
+            android:text="路线描述:"
             android:textSize="15sp"
             android:padding="6dp"/>
         <EditText

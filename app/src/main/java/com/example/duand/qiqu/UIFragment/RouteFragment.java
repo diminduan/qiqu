@@ -34,6 +34,7 @@ import com.example.duand.qiqu.R;
 import com.example.duand.qiqu.Utils.GetHttpConnection;
 import com.example.duand.qiqu.Utils.ListViewForScrollView;
 import com.zaaach.citypicker.CityPickerActivity;
+
 import org.angmarch.views.NiceSpinner;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -335,7 +336,6 @@ public class RouteFragment extends Fragment implements View.OnClickListener{
         route_list.setAdapter(routeAdapter);
 
         initSlider();   //获取轮播图数据
-
 
         RefreshRoute();  //刷新路线数据
     }

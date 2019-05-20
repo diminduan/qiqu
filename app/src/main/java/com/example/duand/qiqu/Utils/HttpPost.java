@@ -3,11 +3,6 @@ package com.example.duand.qiqu.Utils;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.example.duand.qiqu.Activity.NewRouteActivity;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -48,7 +43,9 @@ public class HttpPost extends Thread {
             connection.setRequestMethod("POST");   //设置请求的方式
             connection.setRequestProperty("Content-Type","application/json;charset=UTF-8"); //设置消息的类型
             connection.connect();
+            Log.e("check", "json:"+json);
             String jsonStr = json.toString();   //把JSON对象按JSON的编码格式转换为字符串
+            Log.e("check", "jsonStr:"+jsonStr );
             OutputStream out = connection.getOutputStream();    //输出流，用来发送请求
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));   //创建字符流对象并用高效缓冲流包装
             bw.write(jsonStr);   //把json字符串写入缓冲区中
@@ -56,7 +53,7 @@ public class HttpPost extends Thread {
             out.close();
             bw.close();
 
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK){
+
                 InputStream in = connection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 String line;
@@ -64,6 +61,7 @@ public class HttpPost extends Thread {
                 while ((line = reader.readLine())!= null){
                     response.append(line);
                 }
+                Log.e("check", "response_run: "+response );
 
                 in.close();
                 reader.close();
@@ -73,7 +71,7 @@ public class HttpPost extends Thread {
                 msg.obj = response.toString();
                 handler.sendMessage(msg);
 
-            }
+
 
         } catch (ProtocolException e) {
             e.printStackTrace();

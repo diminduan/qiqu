@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -26,28 +27,40 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.duand.qiqu.Activity.NewMessageActivity;
-import com.example.duand.qiqu.Adapter.DiaryAdapter;
-import com.example.duand.qiqu.JavaBean.Diary;
+import com.example.duand.qiqu.Adapter.DynamicAdapter;
+import com.example.duand.qiqu.Adapter.PersonalDynamicAdapter;
+import com.example.duand.qiqu.Constants;
+import com.example.duand.qiqu.JavaBean.Dynamic;
+import com.example.duand.qiqu.JavaBean.User;
 import com.example.duand.qiqu.R;
+import com.example.duand.qiqu.Utils.GetHttpConnection;
 import com.example.duand.qiqu.Utils.GetImagePath;
 import com.example.duand.qiqu.Utils.ListViewForScrollView;
 import com.example.duand.qiqu.Utils.ProviderUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.duand.qiqu.Constants.back_savepath;
 import static com.example.duand.qiqu.Constants.head_savepath;
-import static com.example.duand.qiqu.Constants.URL;
 
 public class SocietyFragment extends Fragment implements View.OnClickListener{
 
@@ -57,11 +70,12 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
     private ImageView add_message;
     private ImageView society_head;
     private ListViewForScrollView society_list;
-    private List<Diary> list;
-    private DiaryAdapter adapter;
+    private List<Dynamic> list;
+    private DynamicAdapter adapter;
     private int user_id;
     private Button btn_camera;
     private Button btn_gallery;
+    private int dynamic_userId;
 
     private static final String TAG = "SocietyFragment";
 
@@ -70,6 +84,7 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
     File mCropFile = new File(path, "Crop_FILE_NAME.jpg");//裁剪后的File对象
     File mGalleryFile = new File(path, "Gallery_File_NAME.jpg");//相册的File对象
     private Button btn_back;
+
 
 
     @Nullable
@@ -97,6 +112,12 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
             @SuppressWarnings("deprecation")
             Drawable drawable = new BitmapDrawable(bitmap);  //将bitmap转换成drawable
             society_head.setImageDrawable(drawable);
+        }
+        //背景获取
+        Bitmap bitmap1 = BitmapFactory.decodeFile(back_savepath +user_id+ "back.jpg");
+        if (bitmap1 != null) {
+            Drawable drawable = new BitmapDrawable(bitmap1);  //将bitmap转换成drawable
+            society_back.setImageDrawable(drawable);
         }
 
         //下拉刷新动态
@@ -142,26 +163,79 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
 //        }).start();
 
 
-        Bitmap bitmap1 = BitmapFactory.decodeFile(back_savepath +user_id+ "back.jpg");
-        if (bitmap1 != null) {
-            @SuppressWarnings("deprecation")
-            Drawable drawable = new BitmapDrawable(bitmap1);  //将bitmap转换成drawable
-            society_back.setImageDrawable(drawable);
-        }
+        list = new LinkedList<Dynamic>();
+        String dynamic_url = Constants.newUrl + "getDynamic?"+"userId="+user_id+"&pageNumber=1";
 
-        list = new LinkedList<Diary>();
-        list.add(new Diary(R.mipmap.head_1,"小老弟",
-                "骑行，绿色，健康，快乐！",R.mipmap.picture_1));
-        list.add(new Diary(R.mipmap.head_2,"小茄子",
-                "表白广播站\n" +
-                        "遗失一把雨伞\n" +
-                        "世界微笑日",R.mipmap.picture_2));
-        list.add(new Diary(R.mipmap.head_3,"小可爱",
-                "wherever you are,always with you .",R.mipmap.picture_3));
-        list.add(new Diary(R.mipmap.head_4,"小蜘蛛",
-                "我能想到最幸福的事，就是和你骑车去看日落",R.mipmap.picture_4));
-        adapter = new DiaryAdapter((LinkedList<Diary>) list,getActivity());
+        Handler handler = new Handler(){
+
+            public void handleMessage(Message msg) {
+                if (msg.what == 1){
+                    String response = msg.obj.toString();
+                    Log.e("dynamic_check", "response: "+response );
+                    if (response.equals("[]")){
+                        Toast.makeText(getActivity(),"未加载到更多数据", Toast.LENGTH_SHORT).show();
+                    }
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(response);
+                        Log.e(TAG, "jsonArray:"+jsonArray );
+                        for (int i=0; i<jsonArray.length();i++){
+                            JSONObject dynamic = jsonArray.getJSONObject(i);
+                            String content = dynamic.getString("content");
+                            int good_count = dynamic.getInt("thumbUpCount");
+                            String time = dynamic.getString("createTime");
+                            JSONObject user = dynamic.getJSONObject("user");
+//                            String jsonStr = JSON.toJSONString(dynamic, SerializerFeature.DisableCircularReferenceDetect);
+                            Log.e(TAG, "user:"+user );
+                            dynamic_userId = user.getInt("userId");
+                            String name = user.getString("userName");
+                            Log.e(TAG, "dynmc_user_id:"+dynamic_userId );
+
+                            LayoutInflater inflater = LayoutInflater.from(getActivity());
+                            View view = inflater.inflate(R.layout.dairy_list_item,null);
+                            ImageView small_head_iv = (ImageView)view.findViewById(R.id.small_head_iv);
+                            Bitmap bitmap = BitmapFactory.decodeFile(head_savepath + dynamic_userId + "head.jpg");
+                            Log.e(TAG, "bitmsp:"+bitmap);
+                            if (bitmap != null) {
+                                @SuppressWarnings("deprecation")
+                                Drawable drawable = new BitmapDrawable(bitmap);  //将bitmap转换成drawable
+                                small_head_iv.setImageDrawable(drawable);
+                            }
+                            long new_time = Long.parseLong(time);
+                            Date date = new Date(new_time);
+                            String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+//                            Log.e(TAG, "nickname2in_dynamic:"+name );
+                            list.add(new Dynamic(name,content,R.mipmap.picture_1,dateStr,good_count));
+                            adapter.notifyDataSetChanged();
+                            Log.e(TAG, "list: "+list );
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(),"未查询到信息", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
+
+        Thread dynamic = new GetHttpConnection(dynamic_url,handler);
+        dynamic.setPriority(5);   //设置线程低优先级
+        dynamic.start();
+
+        adapter = new DynamicAdapter((LinkedList<Dynamic>) list,getActivity());
         society_list.setAdapter(adapter);
+
+//        list.add(new Dynamic(R.mipmap.head_1,"小老弟",
+//                "骑行，绿色，健康，快乐！",R.mipmap.picture_1));
+//        list.add(new Dynamic(R.mipmap.head_2,"小茄子",
+//                "表白广播站\n" +
+//                        "遗失一把雨伞\n" +
+//                        "世界微笑日",R.mipmap.picture_2));
+//        list.add(new Dynamic(R.mipmap.head_3,"小可爱",
+//                "wherever you are,always with you .",R.mipmap.picture_3));
+//        list.add(new Dynamic(R.mipmap.head_4,"小蜘蛛",
+//                "我能想到最幸福的事，就是和你骑车去看日落",R.mipmap.picture_4));
+//        adapter = new DynamicAdapter((LinkedList<Dynamic>) list,getActivity());
+//        society_list.setAdapter(adapter);
 
     }
 
@@ -456,8 +530,11 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 msg_bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
                 byte [] b = baos.toByteArray();
+                Bundle bundle = new Bundle();
+                bundle.putInt("user_id",user_id);
                 Intent intent =  new Intent(getActivity(), NewMessageActivity.class);
                 intent.putExtra("image",b);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 break;
 

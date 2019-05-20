@@ -46,7 +46,7 @@ public class NewRouteActivity extends AppCompatActivity {
     private TextView submit_add;
     private EditText route_name;
     private NiceSpinner route_style;
-    private EditText route_detail;
+    private EditText route_distance;
     private EditText route_desc;
     private ImageView route_icon;
     private List<String> spinnerData;
@@ -54,7 +54,7 @@ public class NewRouteActivity extends AppCompatActivity {
     private EditText route_city;
     private int user_id;
 
-    String Url = Constants.URL + "RouteServlet";
+
     String loadUrl = Constants.URL + "uploadLet";
 
     String path = Environment.getExternalStorageDirectory()+"/Android/data/com.example.duand.qiqu/files/";
@@ -68,9 +68,12 @@ public class NewRouteActivity extends AppCompatActivity {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_new_route);
 
-        initView();
+        initView();    //展示主界面
     }
 
+    /**
+     *     展示主界面
+     */
     private void initView() {
 
         cancel_add = (TextView)findViewById(R.id.cancel_add);
@@ -78,10 +81,12 @@ public class NewRouteActivity extends AppCompatActivity {
         route_name = (EditText)findViewById(R.id.route_name);
         route_style = (NiceSpinner)findViewById(R.id.route_style);
         route_city = (EditText)findViewById(R.id.route_city);
-        route_detail = (EditText)findViewById(R.id.route_detail);
+        route_distance = (EditText)findViewById(R.id.route_distance);
         route_desc = (EditText)findViewById(R.id.route_desc);
         route_icon = (ImageView) findViewById(R.id.route_icon);
 
+
+        //接收user_id
         Bundle bundle = this.getIntent().getExtras();
         user_id = bundle.getInt("user_id");
 
@@ -94,7 +99,7 @@ public class NewRouteActivity extends AppCompatActivity {
         });
 
         //spinner选择事件
-        spinnerData = new LinkedList<>(Arrays.asList("市区","公路","乡村","山地","休闲"));
+        spinnerData = new LinkedList<>(Arrays.asList("市区","公路","乡村","山路","休闲"));
         route_style.attachDataSource(spinnerData);
         route_style.setBackgroundResource(R.drawable.spinner_border);
         route_style.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
@@ -120,30 +125,38 @@ public class NewRouteActivity extends AppCompatActivity {
             }
         });
 
-//        //发布事件
-//        if (!route_name.getText().toString().trim().equals("")){      //route_name不为空
-//            if (!route_city.getText().toString().trim().equals("")){    //route_city不为空
-//                if(!route_detail.getText().toString().trim().equals("")){    //route_detail不为空
-//                    if (!route_desc.getText().toString().trim().equals("")){     //route_desc不为空
-//                        submit_add.setTextColor(getResources().getColor(R.color.smssdk_black));
-//                        submit_add.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                SubmitRoute();
-//                            }
-//                        });
-//                    }
-//
-//                }
-//
-//            }
-//        }
+        /**
+         *  发布事件
+         */
+        submit_add.setTextColor(getResources().getColor(R.color.smssdk_black));
 
         submit_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("check", "route_style:"+ style_name );
-                SubmitRoute();
+                if (!route_name.getText().toString().trim().equals("")){     //route_name不为空
+                    if (style_name != ""){   //style_name不为空
+                        if (!route_city.getText().toString().trim().equals("")){   //route_city不为空
+                            if (!route_distance.getText().toString().trim().equals("")){   //route_distance不为空
+                                if (!route_desc.getText().toString().trim().equals("")) {     //route_desc不为空
+
+                                    SubmitRoute();   //发布路线信息
+                                }else {
+                                    Toast.makeText(NewRouteActivity.this,"请填写完整路线信息",Toast.LENGTH_SHORT).show();
+                                }
+                            }else {
+                                Toast.makeText(NewRouteActivity.this,"请填写完整路线信息",Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            Toast.makeText(NewRouteActivity.this,"请填写完整路线信息",Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(NewRouteActivity.this,"请填写完整路线信息",Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(NewRouteActivity.this,"请填写完整路线信息",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -154,58 +167,71 @@ public class NewRouteActivity extends AppCompatActivity {
             if (msg.what == 1){
                 String response = msg.obj.toString();
                 Log.e("check", "handleMessage: "+ response );
-                try{
-                    JSONObject json = new JSONObject(response);
-                    boolean result = json.getBoolean("json");
-                    if (result){
-                        Toast.makeText(NewRouteActivity.this,"发布成功",Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                boolean result = isNumeric(response);
+                if (result){
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(NewRouteActivity.this,"发布成功",Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    },1000);
+
+                }else{
+                    Toast.makeText(NewRouteActivity.this,"出现错误",Toast.LENGTH_SHORT).show();
                 }
             }
         }
     };
 
+    public static boolean isNumeric(String str) {
+       for (int i = 0; i < str.length(); i++) {
 
+           System.out.println(str.charAt(i));
+           if (!Character.isDigit(str.charAt(i))) {
+               return false;
+           }
+       }
+       return true;
+    }
 
     private void SubmitRoute() {
 
+        String Url = Constants.newUrl + "publishBoutiqueInfo"+"?userId="+user_id;
+
         try {
             JSONObject route = new JSONObject();
-            route.put("route_name", route_name.getText().toString());
-            route.put("route_style",style_name);
-            route.put("route_city", route_city.getText().toString());
-            route.put("route_detail",route_detail.getText().toString());
-            route.put("route_desc",route_desc.getText().toString());
-            route.put("user_id",user_id);
+            route.put("boutiqueRouteTitle", route_name.getText().toString());
+            route.put("boutiqueRouteType",style_name);
+            route.put("boutiqueRouteCity", route_city.getText().toString());
+            route.put("boutiqueRouteDistance",route_distance.getText().toString());
+            route.put("boutiqueRouteDescription",route_desc.getText().toString());
             Log.e("check", "SubmitRoute: "+ route );
 
             new HttpPost(Url,handler,route).start();
+            Log.e("check", "url:"+Url );
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    File file = new File(fileName);
-                    Log.e("check", "fileName"+fileName);
-                    Log.e("check", "file"+file);
-                    if (file != null){
-                        String request = UploadUtil.uploadFile(file,loadUrl);
-                        Log.e("check", "request"+request);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    File file = new File(fileName);
+//                    Log.e("check", "fileName"+fileName);
+//                    Log.e("check", "file"+file);
+//                    if (file != null){
+//                        String request = UploadUtil.uploadFile(file,loadUrl);
+//                        Log.e("check", "request"+request);
+//                    }
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
-
 
     //调用图库
     private void getPhoto() {

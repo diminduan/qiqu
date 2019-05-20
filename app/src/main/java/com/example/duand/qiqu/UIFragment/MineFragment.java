@@ -2,7 +2,6 @@ package com.example.duand.qiqu.UIFragment;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,16 +42,29 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.duand.qiqu.Adapter.PersonalDiaryAdapter;
-import com.example.duand.qiqu.JavaBean.Diary;
+import com.example.duand.qiqu.Activity.MineInfoActivity;
+import com.example.duand.qiqu.Adapter.DynamicAdapter;
+import com.example.duand.qiqu.Adapter.PersonalDynamicAdapter;
+import com.example.duand.qiqu.Constants;
+import com.example.duand.qiqu.FragmentActivity;
+import com.example.duand.qiqu.JavaBean.Dynamic;
 import com.example.duand.qiqu.R;
+import com.example.duand.qiqu.Utils.GetHttpConnection;
 import com.example.duand.qiqu.Utils.GetImagePath;
 import com.example.duand.qiqu.Utils.ListViewForScrollView;
 import com.example.duand.qiqu.Utils.ProviderUtil;
+import com.example.duand.qiqu.Utils.UploadFileUtils;
+import com.example.duand.qiqu.Utils.UploadUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import static android.app.Activity.RESULT_OK;
@@ -71,15 +84,25 @@ public class MineFragment extends Fragment implements View.OnClickListener{
     File mGalleryFile = new File(path, "Gallery_File_NAME.jpg");//相册的File对象
 
     private ImageView bg_iv;
-    private List<Diary> list;
+    private List<Dynamic> list;
     private TextView nickname;
-    private PersonalDiaryAdapter adapter;
+    private PersonalDynamicAdapter adapter;
     private ListViewForScrollView list_diary;
     private ScrollView src_view;
     private SwipeRefreshLayout diary_refresh;
     private int user_id;
     private NavigationView nav_view;
     private DrawerLayout mine_drawer;
+    private View headerView;
+    private ImageView nav_head;
+    private TextView nav_name;
+    private Bitmap bitmap;
+    private TextView nav_moto;
+    private TextView tel_num;
+    private ImageView gender;
+    private TextView address;
+    private TextView moto;
+    private File photoUri;
 
     @Nullable
     @Override
@@ -88,16 +111,25 @@ public class MineFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.mine_fragment, container, false);
 
         nickname = (TextView)view.findViewById(R.id.tv_nickname);
+        tel_num = (TextView)view.findViewById(R.id.tel_num);
+        gender = (ImageView)view.findViewById(R.id.gender);
+        address = (TextView)view.findViewById(R.id.address);
+        moto = (TextView)view.findViewById(R.id.moto);
         header_iv = (ImageView) view.findViewById(R.id.header_iv);
         menu_iv = (ImageView) view.findViewById(R.id.menu_iv);
         bg_iv = (ImageView)view.findViewById(R.id.bg_iv);
-//        list_diary = (ListView)view.findViewById(R.id.list_diary);
 
         list_diary = (ListViewForScrollView)view.findViewById(R.id.list_diary);
         diary_refresh = (SwipeRefreshLayout)view.findViewById(R.id.diary_refresh);
         src_view = (ScrollView)view.findViewById(R.id.scr_view);
-        nav_view = (NavigationView)view.findViewById(R.id.nav_view);
+
         mine_drawer = (DrawerLayout)view.findViewById(R.id.mine_drawer);
+        nav_view = (NavigationView)view.findViewById(R.id.nav_view);
+        headerView = nav_view.getHeaderView(0);
+        nav_head = (ImageView)headerView.findViewById(R.id.nav_head);
+        nav_name = (TextView)headerView.findViewById(R.id.nav_name);
+        nav_moto = (TextView)headerView.findViewById(R.id.nav_moto);
+
 
         header_iv.setOnClickListener(this);
         menu_iv.setOnClickListener(this);
@@ -109,7 +141,8 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
         requestWritePermission();    //请求权限
 
-        Bitmap bitmap = BitmapFactory.decodeFile(head_savepath + user_id + "head.jpg");
+        //设置头像
+        bitmap = BitmapFactory.decodeFile(head_savepath + user_id + "head.jpg");
         Log.e(TAG, "head_savepath :" + head_savepath);
 //        Bitmap bitmap1 = null;
 //        try (InputStream pathstream = new URL(savepath).openStream()) {
@@ -125,38 +158,121 @@ public class MineFragment extends Fragment implements View.OnClickListener{
             header_iv.setImageDrawable(drawable);
         }
 
+        //展示个人动态
         ShowDiary();
+
+        //获取用户数据
+        getData(user_id);
 
         return view;
     }
 
+    private void getData(int id) {
+        String url = Constants.newUrl+"user?"+"id="+ id;
+
+        Handler handler = new Handler(){
+            public  void handleMessage(Message msg){
+                if (msg.what == 1){
+                    String response = msg.obj.toString();
+                    Log.e("check", "handleMessage: "+response );
+                    try {
+                        JSONObject result = new JSONObject(response);
+                        nickname.setText(result.getString("userName"));
+                        nav_name.setText(result.getString("userName"));
+                        tel_num.setText(result.getString("phoneNumber"));
+                        nav_moto.setText(result.getString("moto"));
+                        moto.setText(result.getString("moto"));
+                        address.setText(result.getString("userAddress"));
+                        String gender_name = result.getString("gender");
+                        Log.e(TAG, "nicknae: "+nickname.getText().toString());
+                        if (gender_name.equals("男")){
+                            gender.setImageResource(R.drawable.male);
+                        }else {
+                            gender.setImageResource(R.drawable.female);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
+        Thread dynamic = new GetHttpConnection(url,handler);
+        dynamic.setPriority(Thread.MAX_PRIORITY);   //设置线程高优先级（也可把Thread.MAX_PRIORITY 改成 1~10）
+        dynamic.start();
+
+    }
+
     private void ShowDiary() {
 
-        list = new LinkedList<Diary>();
-        list.add(new Diary(nickname.getText().toString(),"骑行，绿色，健康，快乐",R.mipmap.picture_1));
-        list.add(new Diary(nickname.getText().toString(),"Take the time,just enjoying !",R.mipmap.picture_2));
-        adapter = new PersonalDiaryAdapter((LinkedList<Diary>) list,getActivity(),user_id);
-        list_diary.setAdapter(adapter);
         src_view.smoothScrollTo(0,0);
+        list = new LinkedList<Dynamic>();
 
-        diary_refresh.setColorSchemeResources(R.color.start,R.color.middle,R.color.end);
-        diary_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        list = new LinkedList<Diary>();
-                        list.add(new Diary(nickname.getText().toString(),"骑行，绿色，健康，快乐",R.mipmap.picture_1));
-                        list.add(new Diary(nickname.getText().toString(),"Take the time,just enjoying !",R.mipmap.picture_2));
-                        adapter = new PersonalDiaryAdapter((LinkedList<Diary>) list,getActivity(),user_id);
-                        list_diary.setAdapter(adapter);
-                        src_view.smoothScrollTo(0,0);
-                        diary_refresh.setRefreshing(false);
+        String url = Constants.newUrl + "getUserDynamics?"+"userId="+user_id+"&pageNumber=1";
+
+        Handler handler = new Handler(){
+            public void handleMessage(Message msg) {
+                if (msg.what == 1){
+                    String response = msg.obj.toString();
+                    Log.e("dynamic_check", "response: "+response );
+                    if (response.equals("[]")){
+                        Toast.makeText(getActivity(),"未加载到更多数据", Toast.LENGTH_SHORT).show();
                     }
-                },1000);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+
+                        for (int i=0; i<jsonArray.length();i++){
+                            JSONObject dynamic = jsonArray.getJSONObject(i);
+                            String content = dynamic.getString("content");
+                            int good_count = dynamic.getInt("thumbUpCount");
+                            String time = dynamic.getString("createTime");
+                            long new_time = Long.parseLong(time);
+                            Date date = new Date(new_time);
+                            String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                            Log.e(TAG, "nickname2:"+nickname.getText().toString() );
+                            list.add(new Dynamic(nickname.getText().toString(),content,R.mipmap.picture_2,dateStr,good_count));
+                            adapter.notifyDataSetChanged();
+                            Log.e(TAG, "list: "+list );
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(),"未查询到信息", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
-        });
+        };
+
+        Thread dynamic = new GetHttpConnection(url,handler);
+        dynamic.setPriority(Thread.MIN_PRIORITY);   //设置线程低优先级
+        dynamic.start();
+
+        adapter = new PersonalDynamicAdapter((LinkedList<Dynamic>) list,getActivity(),user_id);
+        list_diary.setAdapter(adapter);
+
+//        list.add(new Diary(nickname.getText().toString(),"骑行，绿色，健康，快乐",R.mipmap.picture_1));
+//        list.add(new Diary(nickname.getText().toString(),"Take the time,just enjoying !",R.mipmap.picture_2));
+//        adapter = new PersonalDynamicAdapter((LinkedList<Diary>) list,getActivity(),user_id);
+//        list_diary.setAdapter(adapter);
+
+
+//        diary_refresh.setColorSchemeResources(R.color.start,R.color.middle,R.color.end);
+//        diary_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        list = new LinkedList<Diary>();
+//                        list.add(new Diary(nickname.getText().toString(),"骑行，绿色，健康，快乐",R.mipmap.picture_1));
+//                        list.add(new Diary(nickname.getText().toString(),"Take the time,just enjoying !",R.mipmap.picture_2));
+//                        adapter = new PersonalDynamicAdapter((LinkedList<Diary>) list,getActivity(),user_id);
+//                        list_diary.setAdapter(adapter);
+//                        src_view.smoothScrollTo(0,0);
+//                        diary_refresh.setRefreshing(false);
+//                    }
+//                },1000);
+//            }
+//        });
 
     }
 
@@ -187,12 +303,29 @@ public class MineFragment extends Fragment implements View.OnClickListener{
     //弹出抽屉侧边栏
     private void popDrawer(){
         mine_drawer.openDrawer(Gravity.START);
+
+        //menu点击事件
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Toast.makeText(getActivity(),menuItem.getTitle(), Toast.LENGTH_LONG).show();
                 mine_drawer.closeDrawers();
                 return false;
+            }
+        });
+
+        nav_head.setImageBitmap(bitmap);
+        //header点击事件
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(), MineInfoActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("user_id",user_id);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,5);
+
             }
         });
 
@@ -281,7 +414,7 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            Log.d(TAG, "getPicFromCamera: targetUri"+targetUri.toString());
+            Log.e(TAG, "getPicFromCamera: targetUri"+targetUri.toString());
         }else {
             intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(mCameraFile));
         }
@@ -340,6 +473,7 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                 intent.setDataAndType(inputUri,"image/*");
             }
             intent.putExtra(MediaStore.EXTRA_OUTPUT,outputUri);
+            Log.e(TAG, "Photofilename: " + outputUri );
         }
         //设置裁剪
 
@@ -413,10 +547,13 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
             case 1:               //版本>7.0  图库后返回
                 if (resultCode == RESULT_OK) {
-                   File  photoUri = new File(GetImagePath.getPath(getContext(),data.getData()));
+                    photoUri = new File(GetImagePath.getPath(getContext(),data.getData()));
                    Uri dataUri = FileProvider.getUriForFile     //这里的authority需与AndroidManifest里面的provider的authority相同
                            (getActivity(),ProviderUtil.getFileProviderName(getActivity()), photoUri);
                     CropPhoto(dataUri);
+                    Log.e(TAG, "onActivityResult_photo: "+ photoUri);
+                    Log.e(TAG, "onActivityResult_photo_path: "+ photoUri.getPath());
+                    Log.e(TAG, "onActivityResult_photo_str: "+ photoUri.toString());
                 } else {
                     Toast.makeText(getActivity(), "更换头像取消", Toast.LENGTH_SHORT).show();
                 }
@@ -458,7 +595,24 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                 setPhotoSave(bitmap);
                 header_iv.setImageBitmap(toRoundBitmp(bitmap));
 
+                //上传头像
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String url = Constants.newUrl +"uploadPic?"+"userId="+user_id;
+//                        UploadFileUtils.uploadFile(photoUri.getPath(),url);
+                        UploadUtil.uploadFile(photoUri,url);
+                    }
+                }).start();
+
+                ShowDiary();
+
                 break;
+            case 5:
+                if (resultCode == 2){
+                    FragmentActivity activity = (FragmentActivity)getActivity();
+                    activity.BackFragment();
+                }
             default:break;
         }
 

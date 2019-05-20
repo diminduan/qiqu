@@ -21,7 +21,7 @@
                     android:id="@+id/society_back"
                     android:layout_width="match_parent"
                     android:layout_height="230dp"
-                    android:src="@mipmap/society_back"
+                    android:src="@mipmap/picture_3"
                     android:scaleType="fitXY" />
 
                 <ImageView

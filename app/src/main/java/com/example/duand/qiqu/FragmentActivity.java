@@ -1,13 +1,12 @@
 package com.example.duand.qiqu;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.duand.qiqu.UIFragment.MatchFragment;
@@ -36,9 +35,26 @@ public class FragmentActivity extends AppCompatActivity implements BottomNavigat
         Bundle bundle = this.getIntent().getExtras();
         user_id = bundle.getInt("user_id");
         Log.e("check", "getResult: "+ user_id);
+
         initFragment();
     }
 
+    /**
+     *    返回指定Fragment
+     */
+    public void BackFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        mineFragment = new MineFragment();
+        SendUserId(mineFragment);
+        transaction.replace(R.id.frame_lay, mineFragment);
+        transaction.commit();
+
+    }
+
+    /**
+     *    设置Fragment样式
+     */
     private void initFragment() {
         bottomNavigationBar = (BottomNavigationBar)findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);   //设置固定模式
@@ -59,7 +75,10 @@ public class FragmentActivity extends AppCompatActivity implements BottomNavigat
         setDefaultFragment();
     }
 
-    private void setDefaultFragment() {               //设置默认fragment页面
+    /**
+     *   设置默认fragment页面
+     */
+    private void setDefaultFragment() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         routeFragment = new RouteFragment();
@@ -68,6 +87,10 @@ public class FragmentActivity extends AppCompatActivity implements BottomNavigat
         transaction.commit();
     }
 
+    /**
+     *  向指定Fragment发送user_id
+     * @param fragment
+     */
     private void SendUserId(Fragment fragment) {
         Bundle bundle1 = new Bundle();
         bundle1.putInt("user_id",user_id);
@@ -97,7 +120,7 @@ public class FragmentActivity extends AppCompatActivity implements BottomNavigat
                 break;
             case 2:
                 if(timeFragment == null){
-                    timeFragment = TimeFragment.newInstance("时间");
+                    timeFragment = new TimeFragment();
                 }
                 transaction.replace(R.id.frame_lay,timeFragment);
                 break;
