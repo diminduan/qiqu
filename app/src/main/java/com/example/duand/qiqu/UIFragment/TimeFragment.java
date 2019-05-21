@@ -18,6 +18,7 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
@@ -101,7 +102,6 @@ public class TimeFragment extends Fragment implements AMap.OnMapClickListener{
         begin_navi.setOnClickListener(new View.OnClickListener() {  //跳转至导航页面
             @Override
             public void onClick(View view) {
-
             }
         });
         begin_track.setOnClickListener(new View.OnClickListener() {    //开始定位追踪
@@ -464,6 +464,7 @@ public class TimeFragment extends Fragment implements AMap.OnMapClickListener{
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
+        aMap = null;
     }
     @Override
     public void onResume() {
@@ -509,6 +510,11 @@ public class TimeFragment extends Fragment implements AMap.OnMapClickListener{
         smsManager.sendTextMessage(number, null, content, null, null);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+    }
 }
 
 

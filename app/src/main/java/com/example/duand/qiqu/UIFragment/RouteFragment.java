@@ -104,7 +104,6 @@ public class RouteFragment extends Fragment implements View.OnClickListener{
 
         ChangeSearchView();   //修改route_search的样式 && 设置spinner的样式
         initRoute();     //展示ListView
-
 //        RefreshRoute();  //下拉刷新路线信息
         return view;
     }

@@ -89,7 +89,7 @@
             android:value="964753b0c84e5c0694259c4472d5a411"/>
 
         <service android:name="com.amap.api.location.APSService" />
-        <!--<service android:name="com.amap.api.track.AMapTrackService" />-->
+        <service android:name="com.amap.api.track.AMapTrackService" />
     </application>
 
 </manifest>
