@@ -1,6 +1,7 @@
 package com.example.duand.qiqu.UIFragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,6 +77,7 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
     private Button btn_camera;
     private Button btn_gallery;
     private int dynamic_userId;
+    private Context mcontext;
 
     private static final String TAG = "SocietyFragment";
 
@@ -84,7 +86,7 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
     File mCropFile = new File(path, "Crop_FILE_NAME.jpg");//裁剪后的File对象
     File mGalleryFile = new File(path, "Gallery_File_NAME.jpg");//相册的File对象
     private Button btn_back;
-
+    private ImageView small_head_iv;
 
 
     @Nullable
@@ -141,7 +143,9 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    //展示动态
+    /**
+     *   展示动态
+     */
     private void showDiary() {
 
 //        new Thread(new Runnable() {
@@ -161,7 +165,9 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
 //                }
 //            }
 //        }).start();
-
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dairy_list_item,null);
+        small_head_iv = (ImageView)view.findViewById(R.id.small_head_iv);
 
         list = new LinkedList<Dynamic>();
         String dynamic_url = Constants.newUrl + "getDynamic?"+"userId="+user_id+"&pageNumber=1";
@@ -176,7 +182,6 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
                         Toast.makeText(getActivity(),"未加载到更多数据", Toast.LENGTH_SHORT).show();
                     }
                     try {
-
                         JSONArray jsonArray = new JSONArray(response);
                         Log.e(TAG, "jsonArray:"+jsonArray );
                         for (int i=0; i<jsonArray.length();i++){
@@ -189,15 +194,11 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
                             Log.e(TAG, "user:"+user );
                             dynamic_userId = user.getInt("userId");
                             String name = user.getString("userName");
-                            Log.e(TAG, "dynmc_user_id:"+dynamic_userId );
+                            Log.e(TAG, "dynamic_user_id:"+dynamic_userId );
 
-                            LayoutInflater inflater = LayoutInflater.from(getActivity());
-                            View view = inflater.inflate(R.layout.dairy_list_item,null);
-                            ImageView small_head_iv = (ImageView)view.findViewById(R.id.small_head_iv);
                             Bitmap bitmap = BitmapFactory.decodeFile(head_savepath + dynamic_userId + "head.jpg");
-                            Log.e(TAG, "bitmsp:"+bitmap);
+                            Log.e(TAG, "pathName:"+ head_savepath + dynamic_userId + "head.jpg");
                             if (bitmap != null) {
-                                @SuppressWarnings("deprecation")
                                 Drawable drawable = new BitmapDrawable(bitmap);  //将bitmap转换成drawable
                                 small_head_iv.setImageDrawable(drawable);
                             }
@@ -218,7 +219,7 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
         };
 
         Thread dynamic = new GetHttpConnection(dynamic_url,handler);
-        dynamic.setPriority(5);   //设置线程低优先级
+        dynamic.setPriority(5);   //设置线程优先级
         dynamic.start();
 
         adapter = new DynamicAdapter((LinkedList<Dynamic>) list,getActivity());
@@ -241,6 +242,7 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+
         switch (v.getId()){
             case R.id.add_message:
                 newMessageDialog();       //写动态调用
@@ -249,6 +251,7 @@ public class SocietyFragment extends Fragment implements View.OnClickListener{
                 newBackDialog();        //改背景调用
                 break;
                 default:break;
+
     }
 
     }

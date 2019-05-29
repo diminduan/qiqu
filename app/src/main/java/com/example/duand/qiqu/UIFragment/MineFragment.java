@@ -55,7 +55,7 @@ import com.example.duand.qiqu.Utils.ListViewForScrollView;
 import com.example.duand.qiqu.Utils.ProviderUtil;
 import com.example.duand.qiqu.Utils.UploadFileUtils;
 import com.example.duand.qiqu.Utils.UploadUtil;
-
+import com.example.duand.qiqu.Utils.okhttpFileUpload;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -600,8 +600,15 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void run() {
                         String url = Constants.newUrl +"uploadPic?"+"userId="+user_id;
-                        UploadFileUtils.uploadFile(photoUri.getPath(),url);
+//                        UploadFileUtils.uploadFile(photoUri.getPath(),url);
 //                        UploadUtil.uploadFile(photoUri,url);
+                        String filename=photoUri.getPath().substring(photoUri.getPath().lastIndexOf("/")+1);
+                        Log.e(TAG, "filename:"+filename );
+                        try {
+                            okhttpFileUpload.fileupload(url,filename,photoUri.getPath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }).start();
 

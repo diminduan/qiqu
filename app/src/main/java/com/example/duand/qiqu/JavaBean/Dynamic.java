@@ -12,6 +12,7 @@ public class Dynamic {
     private int picture;
     private String date;
     private int good_count;
+    private boolean good_focus;
 
 
     public Dynamic(int user_id,String user_name,String presentation,int picture){
@@ -76,6 +77,14 @@ public class Dynamic {
 
     public void setGood_count(int good_count) {
         this.good_count = good_count;
+    }
+
+    public boolean isGood_focus() {
+        return good_focus;
+    }
+
+    public void setGood_focus(boolean good_focus) {
+        this.good_focus = good_focus;
     }
 
 }

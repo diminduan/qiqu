@@ -3,6 +3,7 @@ package com.example.duand.qiqu.Adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -29,6 +30,9 @@ public class DynamicAdapter extends BaseAdapter {
     private ImageView picture;
     private TextView date;
     int muser_id;
+    private ImageView put_good;
+    private TextView good_count;
+
 
     public DynamicAdapter(LinkedList<Dynamic> Data, Context context){
         this.mData = Data;
@@ -65,6 +69,9 @@ public class DynamicAdapter extends BaseAdapter {
         presentation = (TextView)convertView.findViewById(R.id.presentation);
         picture = (ImageView)convertView.findViewById(R.id.picture);
         date = (TextView)convertView.findViewById(R.id.nowtime);
+        put_good = (ImageView)convertView.findViewById(R.id.put_good);
+        good_count = (TextView)convertView.findViewById(R.id.good_count);
+
 
 //        Bitmap bitmap = BitmapFactory.decodeFile(head_savepath + muser_id + "head.jpg");
 //        if (bitmap != null) {
@@ -74,11 +81,15 @@ public class DynamicAdapter extends BaseAdapter {
 //        }
 
 
+
+
+
 //        small_head_iv.setImageResource(mData.get(position).getUser_head());
         name.setText(mData.get(position).getUser_name());
         presentation.setText(mData.get(position).getPresentation());
         picture.setImageResource(mData.get(position).getPicture());
         date.setText(mData.get(position).getDate());
+
 
 
         return convertView;

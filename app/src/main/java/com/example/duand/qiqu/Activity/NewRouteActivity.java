@@ -184,6 +184,7 @@ public class NewRouteActivity extends AppCompatActivity {
         }
     };
 
+    //判断是否为数字字符
     public static boolean isNumeric(String str) {
        for (int i = 0; i < str.length(); i++) {
 
@@ -195,6 +196,7 @@ public class NewRouteActivity extends AppCompatActivity {
        return true;
     }
 
+    //提交路线
     private void SubmitRoute() {
 
         String Url = Constants.newUrl + "publishBoutiqueInfo"+"?userId="+user_id;
